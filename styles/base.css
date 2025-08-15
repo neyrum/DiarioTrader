@@ -1,0 +1,4 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+a { text-decoration: none; color: var(--primary); }
+button { cursor: pointer; border: none; outline: none; }

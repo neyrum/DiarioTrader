@@ -1,0 +1,239 @@
+/* ---------------------- */
+/* Dashboard Styles - DiarioTrader */
+/* ---------------------- */
+
+/* ---------------------- */
+/* Variables globales */
+/* ---------------------- */
+:root {
+  --primary: #1a73e8;
+  --primary-hover: #155ab6;
+  --bg: #f4f4f4;
+  --card-bg: #fff;
+  --text: #222;
+  --muted: #777;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --font: 'Montserrat', sans-serif;
+  --radius: 12px;
+  --shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+/* ---------------------- */
+/* Base / Reset */
+/* ---------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ---------------------- */
+/* Header / Topbar */
+/* ---------------------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+}
+
+.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.topbar .brand img {
+  height: 40px;
+  cursor: pointer;
+}
+
+.topbar .actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.topbar .actions .link,
+.topbar .actions button {
+  background: none;
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius);
+  transition: background 0.2s;
+}
+
+.topbar .actions .link:hover,
+.topbar .actions button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ---------------------- */
+/* Layout Grid */
+/* ---------------------- */
+.grid {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media(min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------------------- */
+/* Cards */
+/* ---------------------- */
+.card {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+/* ---------------------- */
+/* Formulario */
+/* ---------------------- */
+form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+form input, form select, form textarea {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  margin-top: 0.2rem;
+  font-size: 0.95rem;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+form .full {
+  grid-column: span 2;
+}
+
+form .btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+form .btn:hover {
+  background: var(--primary-hover);
+}
+
+.muted {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------------------- */
+/* Tabla de historial */
+/* ---------------------- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.table th, .table td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.table th {
+  background: var(--bg);
+}
+
+.table tbody tr:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+/* ---------------------- */
+/* Estadísticas / Gráficos */
+/* ---------------------- */
+.stats-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.stat {
+  background: #f0f0f0;
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.stat span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+/* ---------------------- */
+/* Toolbar para filtro de tabla */
+/* ---------------------- */
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.toolbar input, .toolbar select {
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+}
+
+/* ---------------------- */
+/* Responsive ajustes */
+/* ---------------------- */
+@media(max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  form .full {
+    grid-column: span 1;
+  }
+
+  .stats-grid {
+    flex-direction: column;
+  }
+}

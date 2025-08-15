@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiarioTrader — Acceso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/login.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="scripts/supabaseClient.js"></script>
+</head>
+<body>
+  <div class="auth-card">
+    <!-- Logo con enlace a landing page -->
+    <a href="index.html">
+      <img src="assets/logo.png" alt="Logo DiarioTrader" class="logo">
+    </a>
+    <h1>Diario Trader</h1>
+
+    <div class="tabs">
+      <button id="tab-login" class="active">Iniciar sesión</button>
+      <button id="tab-register">Crear cuenta</button>
+    </div>
+
+    <form id="form-login" class="active">
+      <input id="login-email" type="email" placeholder="Correo" required>
+      <input id="login-password" type="password" placeholder="Contraseña" required>
+      <button class="btn" type="submit">Entrar</button>
+      <p id="login-msg" class="message"></p>
+    </form>
+
+    <form id="form-register">
+      <input id="reg-email" type="email" placeholder="Correo" required>
+      <input id="reg-password" type="password" placeholder="Contraseña (mín. 6)" minlength="6" required>
+      <button class="btn" type="submit">Crear cuenta</button>
+      <p id="reg-msg" class="message"></p>
+    </form>
+
+    <div class="footer">&copy; 2025 DiarioTrader. Todos los derechos reservados.</div>
+  </div>
+
+  <script src="scripts/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DiarioTrader - Dashboard</title>
+<link rel="stylesheet" href="styles/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="scripts/supabaseClient.js"></script>
+<script defer src="scripts/dashboard.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="logo" onclick="window.location.href='index.html'">
+      <span>DiarioTrader</span>
+    </div>
+    <nav class="actions">
+      <a class="link" href="tools/Inter-s-Compuesto/index.html" target="_blank">Planificación</a>
+      <a class="link" href="tools/Diagnostico/index.html" target="_blank">Registro visual</a>
+      <button id="btn-logout" class="btn-outline">Salir</button>
+    </nav>
+  </header>
+
+  <main class="grid">
+    <!-- Formulario: Guardar nueva operación -->
+    <section class="card">
+      <h2>Nueva operación</h2>
+      <form id="trade-form" class="grid two-cols">
+        <label>
+          <span>Fecha</span>
+          <input type="date" id="trade-date" required>
+        </label>
+        <label>
+          <span>Activo (símbolo)</span>
+          <input type="text" id="symbol" placeholder="BTCUSDT, EURUSD, AAPL…" required>
+        </label>
+        <label>
+          <span>Capital (USD)</span>
+          <input type="number" step="0.01" id="capital" required>
+        </label>
+        <label>
+          <span>TP %</span>
+          <input type="number" step="0.01" id="tp_percent">
+        </label>
+        <label>
+          <span>SL %</span>
+          <input type="number" step="0.01" id="sl_percent">
+        </label>
+        <label>
+          <span>Precio entrada</span>
+          <input type="number" step="0.0001" id="entry_price">
+        </label>
+        <label>
+          <span>Precio salida</span>
+          <input type="number" step="0.0001" id="exit_price">
+        </label>
+        <label>
+          <span>Resultado</span>
+          <select id="outcome">
+            <option value="win">Win</option>
+            <option value="loss">Loss</option>
+            <option value="breakeven">Breakeven</option>
+          </select>
+        </label>
+        <label class="full">
+          <span>Notas</span>
+          <textarea id="notes" rows="3" placeholder="Idea, estrategia, lección aprendida…"></textarea>
+        </label>
+        <label class="full">
+          <span>Ficha/imagen (PNG/JPG)</span>
+          <input type="file" id="image" accept="image/*">
+        </label>
+        <div class="full">
+          <button class="btn" type="submit">Guardar operación</button>
+          <span id="form-msg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- Historial -->
+    <section class="card">
+      <h2>Historial</h2>
+      <div class="toolbar">
+        <input id="filter-symbol" placeholder="Filtrar por símbolo…">
+        <select id="filter-outcome">
+          <option value="">Todos</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="breakeven">Breakeven</option>
+        </select>
+      </div>
+      <table class="table" id="trades-table">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Símbolo</th><th>Capital</th><th>PNL</th><th>Resultado</th><th>Ficha</th><th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- Estadísticas -->
+    <section class="card">
+      <h2>Estadísticas</h2>
+      <div class="stats-grid">
+        <div class="stat"><span id="stat-total"></span><label>Total PnL</label></div>
+        <div class="stat"><span id="stat-winrate"></span><label>Win rate</label></div>
+        <div class="stat"><span id="stat-trades"></span><label>N.º operaciones</label></div>
+      </div>
+      <canvas id="chart-monthly" height="120"></canvas>
+    </section>
+  </main>
+</body>
+</html>
