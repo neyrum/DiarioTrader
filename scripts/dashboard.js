@@ -10,9 +10,27 @@ const filterOutcome = document.getElementById('filter-outcome');
 const statTotal = document.getElementById('stat-total');
 const statWinrate = document.getElementById('stat-winrate');
 const statTrades = document.getElementById('stat-trades');
-const ctxChart = document.getElementById('chart-monthly').getContext('2d');
+const ctxChart = document.getElementById('chart-monthly')?.getContext('2d');
 
 let chartMonthly;
+
+// ------------------------------
+// Tabs
+// ------------------------------
+const tabLinks = document.querySelectorAll('.tab-link');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    // Quitar active a todos
+    tabLinks.forEach(l => l.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+
+    // Activar el seleccionado
+    link.classList.add('active');
+    document.getElementById(link.dataset.tab).classList.add('active');
+  });
+});
 
 // ------------------------------
 // Cerrar sesión
@@ -61,8 +79,6 @@ tradeForm.addEventListener('submit', async (e) => {
   if(imageFile) {
     const fileExt = imageFile.name.split('.').pop();
     const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-    
-    // 🔹 Subir al bucket 'fichas'
     const { data, error } = await supabase.storage
       .from('fichas')
       .upload(fileName, imageFile, { cacheControl: '3600', upsert: false });
@@ -72,12 +88,10 @@ tradeForm.addEventListener('submit', async (e) => {
       return;
     }
 
-    // 🔹 Obtener URL pública
     const { data: urlData } = supabase.storage.from('fichas').getPublicUrl(fileName);
     imageUrl = urlData.publicUrl;
   }
 
-  // Insertar en Supabase
   const { error } = await supabase
     .from('trades')
     .insert([{ user_id: user.id, date, symbol, capital, tp, sl, entry, exit, pnl, outcome, notes, image_url: imageUrl }]);
@@ -86,6 +100,8 @@ tradeForm.addEventListener('submit', async (e) => {
   else {
     tradeForm.reset();
     loadTrades();
+    // Opcional: cambiar a tab historial automáticamente
+    document.querySelector('.tab-link[data-tab="tab-history"]').click();
   }
 });
 
@@ -98,19 +114,15 @@ async function loadTrades() {
     .from('trades')
     .select('*')
     .eq('user_id', user.id)
-    .order('date', { ascending: false }); // Más recientes primero
+    .order('date', { ascending: false });
 
-  if(error) {
-    alert('Error cargando historial: ' + error.message);
-    return;
-  }
+  if(error) { alert('Error cargando historial: ' + error.message); return; }
 
   // Filtrar
   let filtered = trades;
   if(filterSymbol.value) filtered = filtered.filter(t => t.symbol.toLowerCase().includes(filterSymbol.value.toLowerCase()));
   if(filterOutcome.value) filtered = filtered.filter(t => t.outcome === filterOutcome.value);
 
-  // Llenar tabla
   tradesTableBody.innerHTML = '';
   filtered.forEach(t => {
     const tr = document.createElement('tr');
@@ -131,12 +143,11 @@ async function loadTrades() {
 }
 
 // ------------------------------
-// Borrar operación (con imagen)
+// Borrar operación
 // ------------------------------
 async function deleteTrade(id, imageUrl) {
   if(!confirm('¿Seguro quieres eliminar esta operación?')) return;
 
-  // Borrar imagen
   if(imageUrl) {
     const fileName = imageUrl.split('/').pop();
     const { error } = await supabase.storage.from('fichas').remove([fileName]);
@@ -164,14 +175,15 @@ function updateStats(trades) {
 // Gráfico mensual
 // ------------------------------
 function updateChart(trades) {
+  if(!ctxChart) return; // Evitar error si no hay canvas
   const monthly = {};
   trades.forEach(t => {
-    const month = t.date.slice(0,7); // YYYY-MM
+    const month = t.date.slice(0,7);
     if(!monthly[month]) monthly[month] = 0;
     monthly[month] += t.pnl;
   });
 
-  const labels = Object.keys(monthly).sort(); // ordenar cronológicamente
+  const labels = Object.keys(monthly).sort();
   const data = labels.map(m => monthly[m]);
 
   if(chartMonthly) chartMonthly.destroy();
