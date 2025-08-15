@@ -78,6 +78,11 @@ body {
 .tab-link.active {
   background: #fff;
   color: var(--primary);
+  font-weight: bold;
+}
+
+.tab-link:hover {
+  background: rgba(255,255,255,0.3);
 }
 
 #btn-logout {
@@ -118,6 +123,7 @@ main {
   padding: 1rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  margin-bottom: 1rem;
 }
 
 .card h2 {
@@ -197,6 +203,29 @@ form .btn:hover {
   background: rgba(0,0,0,0.03);
 }
 
+.table button {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.table button:hover {
+  background: #a71d2a;
+}
+
+.table a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.table a:hover {
+  text-decoration: underline;
+}
+
 /* ---------------------- */
 /* Estadísticas / Gráficos */
 /* ---------------------- */
@@ -260,5 +289,15 @@ form .btn:hover {
 
   .stats-grid {
     flex-direction: column;
+  }
+  
+  .toolbar {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .table th, .table td {
+    font-size: 0.85rem;
+    padding: 0.4rem;
   }
 }

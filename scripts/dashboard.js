@@ -1,3 +1,5 @@
+// scripts/dashboard.js
+
 // ------------------------------
 // Referencias del DOM
 // ------------------------------
@@ -22,86 +24,134 @@ const tabContents = document.querySelectorAll('.tab-content');
 
 tabLinks.forEach(link => {
   link.addEventListener('click', () => {
-    // Quitar active a todos
     tabLinks.forEach(l => l.classList.remove('active'));
     tabContents.forEach(c => c.classList.remove('active'));
 
-    // Activar el seleccionado
     link.classList.add('active');
-    document.getElementById(link.dataset.tab).classList.add('active');
+    const target = link.dataset.tab;
+    if (target) {
+      const el = document.getElementById(target);
+      if (el) el.classList.add('active');
+    }
   });
 });
 
 // ------------------------------
-// Cerrar sesión
+// Logout
 // ------------------------------
 btnLogout.addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  window.location.href = 'index.html';
+  try {
+    await supabase.auth.signOut();
+  } catch (err) {
+    console.warn('Logout error:', err);
+  } finally {
+    window.location.href = 'index.html';
+  }
 });
 
 // ------------------------------
-// Verificar usuario logueado
+// Auth helper
 // ------------------------------
 async function checkAuth() {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) window.location.href = 'index.html';
+  if (!session) {
+    window.location.href = 'index.html';
+    throw new Error('No session');
+  }
   return session.user;
 }
 
 // ------------------------------
-// Guardar operación
+// Guardar operación (form submit)
 // ------------------------------
 tradeForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const user = await checkAuth();
-  const date = document.getElementById('trade-date').value;
-  const symbol = document.getElementById('symbol').value;
-  const capital = parseFloat(document.getElementById('capital').value);
-  const tp = parseFloat(document.getElementById('tp_percent').value) || 0;
-  const sl = parseFloat(document.getElementById('sl_percent').value) || 0;
-  const entry = parseFloat(document.getElementById('entry_price').value) || 0;
-  const exit = parseFloat(document.getElementById('exit_price').value) || 0;
-  const outcome = document.getElementById('outcome').value;
-  const notes = document.getElementById('notes').value;
+  try {
+    const user = await checkAuth();
 
-  if(entry <= 0 || exit <= 0) {
-    alert('El precio de entrada y salida debe ser mayor a 0');
-    return;
-  }
+    const date = document.getElementById('trade-date').value;
+    const symbol = document.getElementById('symbol').value.trim();
+    const capital = parseFloat(document.getElementById('capital').value);
+    const tp = parseFloat(document.getElementById('tp_percent').value) || 0;
+    const sl = parseFloat(document.getElementById('sl_percent').value) || 0;
+    const entry = parseFloat(document.getElementById('entry_price').value) || 0;
+    const exit = parseFloat(document.getElementById('exit_price').value) || 0;
+    const outcome = document.getElementById('outcome').value;
+    const notes = document.getElementById('notes').value.trim();
 
-  const pnl = ((exit - entry) / entry) * capital;
+    // Validaciones
+    if (!symbol) { alert('El símbolo es obligatorio'); return; }
+    if (isNaN(capital) || capital <= 0) { alert('El capital debe ser mayor a 0'); return; }
+    if (isNaN(entry) || isNaN(exit) || entry <= 0 || exit <= 0) { alert('Precio de entrada y salida debe ser mayor a 0'); return; }
 
-  // Manejo de imagen
-  const imageFile = document.getElementById('image').files[0];
-  let imageUrl = null;
+    const pnl = ((exit - entry) / entry) * capital;
 
-  if(imageFile) {
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage
-      .from('fichas')
-      .upload(fileName, imageFile, { cacheControl: '3600', upsert: false });
+    // Manejo de imagen: subir con prefijo user.id/<timestamp>.<ext>
+    let imageUrl = null;
+    let imagePath = null;
+    const imageFile = document.getElementById('image').files[0];
 
-    if(error) {
-      alert('Error subiendo imagen: ' + error.message);
+    if (imageFile) {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`; // importante: prefijo por usuario
+      imagePath = fileName;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('fichas')
+        .upload(fileName, imageFile, { cacheControl: '3600', upsert: true });
+
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        alert('Error subiendo imagen: ' + uploadError.message);
+        return;
+      }
+
+      // Obtener URL pública (si el bucket tiene lectura pública)
+      const { data: urlData, error: urlError } = supabase.storage.from('fichas').getPublicUrl(fileName);
+      if (urlError) {
+        console.warn('getPublicUrl error:', urlError);
+      } else {
+        // Diferentes versiones de la API pueden devolver publicUrl o public_url
+        imageUrl = urlData?.publicUrl || urlData?.public_url || null;
+      }
+
+      // Si prefieres signed URL en buckets privados:
+      // const { data: signed, error: signedErr } = await supabase.storage.from('fichas').createSignedUrl(fileName, 60);
+      // if (!signedErr) imageUrl = signed.signedURL;
+    }
+
+    // Insertar en tabla trades (guardar image_url e image_path)
+    const { error: insertError } = await supabase.from('trades').insert([{
+      user_id: user.id,
+      date,
+      symbol,
+      capital,
+      tp,
+      sl,
+      entry,
+      exit,
+      pnl,
+      outcome,
+      notes,
+      image_url: imageUrl,
+      image_path: imagePath
+    }]);
+
+    if (insertError) {
+      console.error('Insert trade error:', insertError);
+      alert('Error guardando operación: ' + insertError.message);
       return;
     }
 
-    const { data: urlData } = supabase.storage.from('fichas').getPublicUrl(fileName);
-    imageUrl = urlData.publicUrl;
-  }
-
-  const { error } = await supabase
-    .from('trades')
-    .insert([{ user_id: user.id, date, symbol, capital, tp, sl, entry, exit, pnl, outcome, notes, image_url: imageUrl }]);
-
-  if(error) alert('Error guardando operación: ' + error.message);
-  else {
+    // Éxito
     tradeForm.reset();
-    loadTrades();
-    // Opcional: cambiar a tab historial automáticamente
-    document.querySelector('.tab-link[data-tab="tab-history"]').click();
+    await loadTrades();
+    const historyTab = document.querySelector('.tab-link[data-tab="history"]');
+    if (historyTab) historyTab.click();
+
+  } catch (err) {
+    console.error('Submit handler error:', err);
+    // Si checkAuth redirige, esto puede lanzar. Ya está bien.
   }
 });
 
@@ -109,65 +159,116 @@ tradeForm.addEventListener('submit', async (e) => {
 // Cargar historial
 // ------------------------------
 async function loadTrades() {
-  const user = await checkAuth();
-  const { data: trades, error } = await supabase
-    .from('trades')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: false });
+  try {
+    const user = await checkAuth();
 
-  if(error) { alert('Error cargando historial: ' + error.message); return; }
+    const { data: trades, error } = await supabase
+      .from('trades')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false });
 
-  // Filtrar
-  let filtered = trades;
-  if(filterSymbol.value) filtered = filtered.filter(t => t.symbol.toLowerCase().includes(filterSymbol.value.toLowerCase()));
-  if(filterOutcome.value) filtered = filtered.filter(t => t.outcome === filterOutcome.value);
+    if (error) {
+      console.error('Error loading trades:', error);
+      alert('Error cargando historial: ' + error.message);
+      return;
+    }
 
-  tradesTableBody.innerHTML = '';
-  filtered.forEach(t => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${t.date}</td>
-      <td>${t.symbol}</td>
-      <td>${t.capital.toFixed(2)}</td>
-      <td>${t.pnl.toFixed(2)}</td>
-      <td>${(t.capital + t.pnl).toFixed(2)}</td>
-      <td>${t.image_url ? `<a href="${t.image_url}" target="_blank">Ver</a>` : '-'}</td>
-      <td><button onclick="deleteTrade(${t.id}, '${t.image_url}')">Eliminar</button></td>
-    `;
-    tradesTableBody.appendChild(tr);
-  });
+    // Aplicar filtros en cliente
+    let filtered = trades || [];
+    if (filterSymbol && filterSymbol.value) {
+      filtered = filtered.filter(t => t.symbol && t.symbol.toLowerCase().includes(filterSymbol.value.toLowerCase()));
+    }
+    if (filterOutcome && filterOutcome.value) {
+      filtered = filtered.filter(t => t.outcome === filterOutcome.value);
+    }
 
-  updateStats(filtered);
-  updateChart(filtered);
+    // Render tabla sin inyectar HTML peligroso
+    tradesTableBody.innerHTML = '';
+    filtered.forEach(t => {
+      const tr = document.createElement('tr');
+
+      const tdDate = document.createElement('td'); tdDate.textContent = t.date || '-';
+      const tdSymbol = document.createElement('td'); tdSymbol.textContent = t.symbol || '-';
+      const tdCapital = document.createElement('td'); tdCapital.textContent = (typeof t.capital === 'number') ? t.capital.toFixed(2) : '-';
+      const tdPnl = document.createElement('td'); tdPnl.textContent = (typeof t.pnl === 'number') ? t.pnl.toFixed(2) : '-';
+      const tdResult = document.createElement('td'); tdResult.textContent = (typeof t.capital === 'number' && typeof t.pnl === 'number') ? (t.capital + t.pnl).toFixed(2) : '-';
+
+      const tdImage = document.createElement('td');
+      if (t.image_url) {
+        const a = document.createElement('a');
+        a.href = t.image_url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = 'Ver';
+        tdImage.appendChild(a);
+      } else {
+        tdImage.textContent = '-';
+      }
+
+      const tdActions = document.createElement('td');
+      const btnDelete = document.createElement('button');
+      btnDelete.textContent = 'Eliminar';
+      btnDelete.addEventListener('click', () => deleteTrade(t.id, t.image_path));
+      tdActions.appendChild(btnDelete);
+
+      tr.appendChild(tdDate);
+      tr.appendChild(tdSymbol);
+      tr.appendChild(tdCapital);
+      tr.appendChild(tdPnl);
+      tr.appendChild(tdResult);
+      tr.appendChild(tdImage);
+      tr.appendChild(tdActions);
+
+      tradesTableBody.appendChild(tr);
+    });
+
+    updateStats(filtered);
+    updateChart(filtered);
+
+  } catch (err) {
+    console.error('loadTrades error:', err);
+  }
 }
 
 // ------------------------------
 // Borrar operación
 // ------------------------------
-async function deleteTrade(id, imageUrl) {
-  if(!confirm('¿Seguro quieres eliminar esta operación?')) return;
+async function deleteTrade(id, imagePath) {
+  try {
+    if (!confirm('¿Seguro quieres eliminar esta operación?')) return;
 
-  if(imageUrl) {
-    const fileName = imageUrl.split('/').pop();
-    const { error } = await supabase.storage.from('fichas').remove([fileName]);
-    if(error) console.warn('No se pudo borrar la imagen:', error.message);
+    // Primero borrar fichero (si existe)
+    if (imagePath) {
+      const { error: rmError } = await supabase.storage.from('fichas').remove([imagePath]);
+      if (rmError) {
+        console.warn('Storage remove error:', rmError);
+        // no return; intentar borrar registro de todos modos
+      }
+    }
+
+    const { error } = await supabase.from('trades').delete().eq('id', id);
+    if (error) {
+      console.error('Error deleting trade:', error);
+      alert('Error al eliminar: ' + error.message);
+    } else {
+      await loadTrades();
+    }
+  } catch (err) {
+    console.error('deleteTrade error:', err);
   }
-
-  const { error } = await supabase.from('trades').delete().eq('id', id);
-  if(error) alert('Error al eliminar: ' + error.message);
-  else loadTrades();
 }
 
 // ------------------------------
 // Estadísticas
 // ------------------------------
 function updateStats(trades) {
-  const totalPnL = trades.reduce((sum, t) => sum + t.pnl, 0);
-  const wins = trades.filter(t => t.outcome === 'win').length;
-  const total = trades.length;
+  const totalPnL = (trades || []).reduce((sum, t) => sum + (t.pnl || 0), 0);
+  const wins = (trades || []).filter(t => t.outcome === 'win').length;
+  const total = (trades || []).length;
+
   statTotal.textContent = `$${totalPnL.toFixed(2)}`;
-  statWinrate.textContent = total ? ((wins/total)*100).toFixed(1) + '%' : '-';
+  statWinrate.textContent = total ? ((wins / total) * 100).toFixed(1) + '%' : '-';
   statTrades.textContent = total;
 }
 
@@ -175,18 +276,19 @@ function updateStats(trades) {
 // Gráfico mensual
 // ------------------------------
 function updateChart(trades) {
-  if(!ctxChart) return; // Evitar error si no hay canvas
+  if (!ctxChart) return;
+
   const monthly = {};
-  trades.forEach(t => {
-    const month = t.date.slice(0,7);
-    if(!monthly[month]) monthly[month] = 0;
-    monthly[month] += t.pnl;
+  (trades || []).forEach(t => {
+    const month = (t.date || '').slice(0, 7); // YYYY-MM
+    if (!monthly[month]) monthly[month] = 0;
+    monthly[month] += (t.pnl || 0);
   });
 
   const labels = Object.keys(monthly).sort();
   const data = labels.map(m => monthly[m]);
 
-  if(chartMonthly) chartMonthly.destroy();
+  if (chartMonthly) chartMonthly.destroy();
   chartMonthly = new Chart(ctxChart, {
     type: 'bar',
     data: { labels, datasets: [{ label: 'PnL mensual', data, backgroundColor: '#1a73e8' }] },
@@ -197,13 +299,17 @@ function updateChart(trades) {
 // ------------------------------
 // Filtros
 // ------------------------------
-filterSymbol.addEventListener('input', loadTrades);
-filterOutcome.addEventListener('change', loadTrades);
+if (filterSymbol) filterSymbol.addEventListener('input', () => loadTrades());
+if (filterOutcome) filterOutcome.addEventListener('change', () => loadTrades());
 
 // ------------------------------
 // Inicializar
 // ------------------------------
 window.addEventListener('DOMContentLoaded', async () => {
-  await checkAuth();
-  loadTrades();
+  try {
+    await checkAuth();
+    await loadTrades();
+  } catch (err) {
+    console.warn('Init warning:', err);
+  }
 });
