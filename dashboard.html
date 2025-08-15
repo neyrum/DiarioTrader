@@ -16,16 +16,17 @@
       <img src="assets/logo.png" alt="logo" onclick="window.location.href='index.html'">
       <span>DiarioTrader</span>
     </div>
-    <nav class="actions">
-      <a class="link" href="tools/Inter-s-Compuesto/index.html" target="_blank">Planificación</a>
-      <a class="link" href="tools/Diagnostico/index.html" target="_blank">Registro visual</a>
+    <nav class="tabs">
+      <button class="tab-link active" data-tab="trade">Nueva operación</button>
+      <button class="tab-link" data-tab="history">Historial</button>
+      <button class="tab-link" data-tab="stats">Estadísticas</button>
       <button id="btn-logout" class="btn-outline">Salir</button>
     </nav>
   </header>
 
-  <main class="grid">
-    <!-- Formulario: Guardar nueva operación -->
-    <section class="card">
+  <main>
+    <!-- Nueva operación -->
+    <section id="trade" class="tab-content active">
       <h2>Nueva operación</h2>
       <form id="trade-form" class="grid two-cols">
         <label>
@@ -80,7 +81,7 @@
     </section>
 
     <!-- Historial -->
-    <section class="card">
+    <section id="history" class="tab-content">
       <h2>Historial</h2>
       <div class="toolbar">
         <input id="filter-symbol" placeholder="Filtrar por símbolo…">
@@ -94,7 +95,13 @@
       <table class="table" id="trades-table">
         <thead>
           <tr>
-            <th>Fecha</th><th>Símbolo</th><th>Capital</th><th>PNL</th><th>Resultado</th><th>Ficha</th><th></th>
+            <th>Fecha</th>
+            <th>Símbolo</th>
+            <th>Capital</th>
+            <th>PNL</th>
+            <th>Resultado</th>
+            <th>Ficha</th>
+            <th></th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -102,7 +109,7 @@
     </section>
 
     <!-- Estadísticas -->
-    <section class="card">
+    <section id="stats" class="tab-content">
       <h2>Estadísticas</h2>
       <div class="stats-grid">
         <div class="stat"><span id="stat-total"></span><label>Total PnL</label></div>
