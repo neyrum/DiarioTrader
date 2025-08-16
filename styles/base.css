@@ -101,16 +101,19 @@ header .dark-toggle:hover {
 
 /* ===== BOTÓN REUTILIZABLE ===== */
 .btn {
-  display: inline-block;
-  padding: 0.8rem 1.5rem;
   background: var(--primary);
   color: #fff;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.3s, transform 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
 }
+
 .btn:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }

@@ -145,17 +145,29 @@ form .full {
   grid-column: span 2;
 }
 
+/* BOTÓN PRINCIPAL */
 form .btn {
   background: var(--primary);
   color: #fff;
   padding: 0.6rem 1rem;
+  border: none;
   border-radius: var(--radius);
   font-weight: bold;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
 }
 
 form .btn:hover {
   background: var(--primary-hover);
+}
+
+/* Ajustes en modo oscuro */
+body.dark form .btn {
+  background: var(--primary-dark, #4a90e2); /* azul intenso por defecto */
+  color: #fff;
+}
+body.dark form .btn:hover {
+  background: var(--primary-dark-hover, #357ab7);
 }
 
 .muted {
@@ -314,6 +326,75 @@ td a[data-tooltip]:hover::before {
   background: var(--card-bg);
   color: var(--text);
 }
+
+/* ---------------------- */
+/* Selector de archivo - Estilo moderno */
+/* ---------------------- */
+
+/* Selector de archivo */
+input[type="file"] {
+  width: 100%;
+  border: 1px solid var(--muted);
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover,
+input[type="file"]::-webkit-file-upload-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+/* ---------------------- */
+/* Modo oscuro */
+body.dark .btn {
+  background: var(--primary-dark);
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+body.dark .btn:hover {
+  background: var(--primary-dark-hover);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+}
+
+body.dark input[type="file"] {
+  border-color: #555;
+  background: #2c2c2c;
+  color: #eee;
+}
+
+body.dark input[type="file"]::file-selector-button,
+body.dark input[type="file"]::-webkit-file-upload-button {
+  background: #555;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+}
+
+body.dark input[type="file"]::file-selector-button:hover,
+body.dark input[type="file"]::-webkit-file-upload-button:hover {
+  background: #777;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.6);
+}
+
 
 /* ---------------------- */
 /* Responsive ajustes */
