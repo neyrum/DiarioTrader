@@ -5,12 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DiarioTrader - Dashboard</title>
 <link rel="stylesheet" href="styles/dashboard.css">
+<link rel="stylesheet" href="styles/variables.css">
+<link rel="stylesheet" href="styles/base.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="scripts/supabaseClient.js"></script>
 <script defer src="scripts/dashboard.js"></script>
+<script src="scripts/theme.js"></script>
 </head>
 <body>
+
   <header class="topbar">
     <div class="brand">
       <img src="assets/logo.png" alt="logo" onclick="window.location.href='index.html'">
@@ -21,7 +25,11 @@
       <button class="tab-link" data-tab="history">Historial</button>
       <button class="tab-link" data-tab="stats">Estadísticas</button>
       <button id="btn-logout" class="btn-logout">Salir</button>
+
+       <!-- Botón modo oscuro dentro del header -->
+    <button id="darkModeToggle" class="dark-toggle">🌙</button>
     </nav>
+
   </header>
 
   <main>

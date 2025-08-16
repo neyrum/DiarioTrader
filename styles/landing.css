@@ -1,87 +1,67 @@
-:root {
-  --accent: #1a73e8;
-  --fg: #333;
-  --muted-fg: #666;
-  --card-bg: #fff;
-  --radius: 16px;
-  --shadow: 0 8px 20px rgba(0,0,0,0.08);
-}
-
-* { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
-  font-family:'Montserrat', sans-serif; 
-}
-
-body {
-  background: #f4f4f9;
-  color: var(--fg);
-  line-height: 1.6;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: var(--card-bg);
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-header img { width: 60px; }
-
-nav a {
-  margin-left: 1rem;
-  text-decoration: none;
-  color: var(--accent);
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-nav a:hover { color: #155ab6; }
-
+/* ===== HERO ===== */
 .hero {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
+  background: var(--bg); /* usa variable global */
 }
 
-.hero h1 { 
-  font-size: 3rem; 
-  margin-bottom: 1rem; 
-  color: var(--accent); 
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--primary); /* usa variable primaria */
 }
 
-.hero p { 
-  font-size: 1.2rem; 
-  margin-bottom: 2rem; 
-  color: var(--muted-fg); 
-  max-width: 600px; 
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: var(--muted); /* color secundario adaptable */
+  max-width: 600px;
 }
 
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  .hero p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Botón dentro del hero */
 .hero .btn {
   padding: 1rem 2rem;
   margin: 0 0.5rem;
   border-radius: var(--radius);
-  background: var(--accent);
-  color: white;
+  background: var(--primary); /* variable primaria */
+  color: var(--card-bg); /* contraste automático con modo oscuro */
   font-weight: 600;
   text-decoration: none;
-  transition: 0.2s;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: var(--shadow);
+}
+.hero .btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
 }
 
-.hero .btn:hover { background: #155ab6; }
-
+/* Footer */
 footer {
   text-align: center;
   padding: 2rem;
   font-size: 0.85rem;
-  color: #aaa;
+  color: var(--text-light); /* adaptable a modo oscuro */
+  background: var(--card-bg);
 }

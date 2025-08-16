@@ -3,24 +3,6 @@
 /* ---------------------- */
 
 /* ---------------------- */
-/* Variables globales */
-/* ---------------------- */
-:root {
-  --primary: #1a73e8;
-  --primary-hover: #155ab6;
-  --bg: #f4f4f4;
-  --card-bg: #fff;
-  --text: #222;
-  --muted: #777;
-  --success: #28a745;
-  --danger: #dc3545;
-  --warning: #ffc107;
-  --font: 'Montserrat', sans-serif;
-  --radius: 12px;
-  --shadow: 0 6px 15px rgba(0,0,0,0.08);
-}
-
-/* ---------------------- */
 /* Base / Reset */
 /* ---------------------- */
 * {
@@ -43,8 +25,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--primary);
-  color: #fff;
+  background: var(--header-bg);
+  color: var(--header-text);
   padding: 0.5rem 1rem;
 }
 
@@ -147,10 +129,12 @@ form label {
 
 form input, form select, form textarea {
   padding: 0.5rem 0.7rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--muted);
   border-radius: var(--radius);
   margin-top: 0.2rem;
   font-size: 0.95rem;
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 form textarea {
@@ -191,12 +175,13 @@ form .btn:hover {
 .table th, .table td {
   text-align: left;
   padding: 0.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--muted);
   font-size: 0.9rem;
 }
 
 .table th {
-  background: var(--bg);
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 .table tbody tr:hover {
@@ -237,11 +222,12 @@ form .btn:hover {
 }
 
 .stat {
-  background: #f0f0f0;
+  background: var(--card-bg);
   flex: 1;
   padding: 0.8rem;
   border-radius: var(--radius);
   text-align: center;
+  color: var(--text);
 }
 
 .stat span {
@@ -263,7 +249,9 @@ form .btn:hover {
 .toolbar input, .toolbar select {
   padding: 0.3rem 0.5rem;
   border-radius: var(--radius);
-  border: 1px solid #ccc;
+  border: 1px solid var(--muted);
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 /* ---------------------- */

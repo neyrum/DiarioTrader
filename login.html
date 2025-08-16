@@ -6,22 +6,32 @@
   <title>DiarioTrader — Acceso</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/login.css">
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/base.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="scripts/supabaseClient.js"></script>
+  <script src="scripts/theme.js"></script>
 </head>
 <body>
+  
   <div class="auth-card">
+
+    <!-- 🔘 Botón flotante para modo oscuro -->
+    <button id="darkModeToggle" class="dark-toggle">🌙</button> 
+
     <!-- Logo con enlace a landing page -->
     <a href="index.html">
       <img src="assets/logo.png" alt="Logo DiarioTrader" class="logo">
     </a>
     <h1>Diario Trader</h1>
-
+    
+    <!-- Tabs de login / registro -->
     <div class="tabs">
       <button id="tab-login" class="active">Iniciar sesión</button>
       <button id="tab-register">Crear cuenta</button>
     </div>
 
+    <!-- Formulario de login -->
     <form id="form-login" class="active">
       <input id="login-email" type="email" placeholder="Correo" required>
       <input id="login-password" type="password" placeholder="Contraseña" required>
@@ -29,6 +39,7 @@
       <p id="login-msg" class="message"></p>
     </form>
 
+    <!-- Formulario de registro -->
     <form id="form-register">
       <input id="reg-email" type="email" placeholder="Correo" required>
       <input id="reg-password" type="password" placeholder="Contraseña (mín. 6)" minlength="6" required>
@@ -39,6 +50,7 @@
     <div class="footer">&copy; 2025 DiarioTrader. Todos los derechos reservados.</div>
   </div>
 
+  <!-- Scripts -->
   <script src="scripts/login.js"></script>
 </body>
 </html>

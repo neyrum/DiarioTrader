@@ -1,4 +1,116 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-body { background: var(--bg); color: var(--text); min-height: 100vh; }
-a { text-decoration: none; color: var(--primary); }
-button { cursor: pointer; border: none; outline: none; }
+/* ===== RESET Y BASE ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font, 'Montserrat', sans-serif);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Enlaces */
+a {
+  text-decoration: none;
+  color: var(--primary);
+  transition: color 0.3s;
+}
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Botones generales */
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* ===== ENCABEZADO Y PIE ===== */
+header {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header img {
+  max-height: 50px;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  background: var(--card-bg);
+  color: var(--text-light, #aaa);
+}
+
+/* ===== BOTÓN DARK MODE ===== */
+.dark-toggle {
+  position: relative; /* ya no fijo */
+  margin-left: 1rem;
+  top: 0;
+  right: 0;
+  background: var(--card-bg);
+  border-radius: 50%;
+  padding: 0.5rem 0.7rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.dark-toggle:hover {
+  background: var(--primary-hover);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ===== AJUSTE PARA BOTÓN DENTRO DEL HEADER ===== */
+header .dark-toggle {
+  position: relative; /* dentro del header */
+  margin-left: 1rem;
+  background: rgba(255, 255, 255, 0.2); /* semitransparente para contrastar sobre azul */
+  color: #fff;
+  border-radius: 50%;
+  padding: 0.5rem 0.7rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+header .dark-toggle:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+/* ===== BOTÓN REUTILIZABLE ===== */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}

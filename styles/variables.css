@@ -1,9 +1,43 @@
 :root {
+  /* 🌞 Modo claro (default) */
   --primary: #1a73e8;
   --primary-hover: #155ab6;
+
   --bg: #f4f4f4;
-  --card-bg: #fff;
-  --text: #222;
-  --muted: #777;
+  --card-bg: #ffffff;
+
+  --text: #222222;
+  --text-light: #555555;  /* Para subtítulos o texto secundario */
+  --muted: #777777;
+
+  /* Header / Topbar */
+  --header-bg: var(--primary); /* azul para modo claro */
+  --header-text: #ffffff;
+
   --font: 'Montserrat', sans-serif;
+
+  /* Extras */
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body.dark {
+  /* 🌙 Modo oscuro */
+  --primary: #66aaff;
+  --primary-hover: #5599dd;
+
+  --bg: #121212;
+  --card-bg: #1e1e1e;
+
+  --text: #f4f4f4;
+  --text-light: #cccccc;
+  --muted: #aaaaaa;
+
+  /* Header / Topbar */
+  --header-bg: #1e1e1e;      /* gris oscuro para el topbar */
+  --header-text: #f4f4f4;
+
+  /* Mantiene consistencia */
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
