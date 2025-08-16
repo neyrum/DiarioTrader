@@ -200,7 +200,10 @@ async function loadTrades() {
         a.href = t.image_url;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        a.textContent = 'Ver';
+        a.innerHTML = '<i class="fa-solid fa-eye"></i>';
+        a.title = 'Ver ficha';
+        a.style.fontSize = '1.2rem'; 
+        a.style.color = 'var(--primary)'; 
         tdImage.appendChild(a);
       } else {
         tdImage.textContent = '-';
@@ -208,7 +211,8 @@ async function loadTrades() {
 
       const tdActions = document.createElement('td');
       const btnDelete = document.createElement('button');
-      btnDelete.textContent = 'Eliminar';
+      btnDelete.innerHTML = '<i class="fas fa-trash"></i>'; // icono cesto
+      btnDelete.title = 'Eliminar operación'; // tooltip al pasar el mouse
       btnDelete.addEventListener('click', () => deleteTrade(t.id, t.image_path));
       tdActions.appendChild(btnDelete);
 

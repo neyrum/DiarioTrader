@@ -189,17 +189,27 @@ form .btn:hover {
 }
 
 .table button {
-  background: var(--danger);
-  color: #fff;
+  background: var(--danger, #a71d2a); /* fondo rojo */
+  color: #fff; /* color del icono */
   border: none;
   padding: 0.3rem 0.5rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius, 8px);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table button:hover {
-  background: #a71d2a;
+  background: #ff3b3b; /* rojo más intenso al pasar mouse */
+  color: #fff;
+}
+
+/* Ajuste automático en modo oscuro */
+body.dark .table button {
+  background: #a71d2a; /* rojo oscuro */
+  color: #fff;
 }
 
 .table a {
@@ -207,8 +217,59 @@ form .btn:hover {
   text-decoration: none;
 }
 
-.table a:hover {
-  text-decoration: underline;
+.table button i {
+  font-size: 1rem;
+  color: currentColor; /* siempre usa el color del botón */
+}
+
+.table button:hover i {
+  color: #fff; /* o un color que contraste al hacer hover */
+}
+
+/* Tooltip para icono de ver ficha */
+td a[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+td a[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+td a[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--card-bg) transparent transparent transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+td a[data-tooltip]:hover::after,
+td a[data-tooltip]:hover::before {
+  opacity: 1;
 }
 
 /* ---------------------- */
